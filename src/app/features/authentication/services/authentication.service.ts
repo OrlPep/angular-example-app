@@ -27,7 +27,7 @@ export const REFRESH_TOKEN_KEY = 'refresh-token';
 })
 export class AuthenticationService {
   private readonly endpoints = getEndpoints();
-  private readonly httpClient = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   private readonly storageService = inject(LOCAL_STORAGE);
   private readonly languageService = inject(LanguageService);
 
@@ -53,7 +53,7 @@ export class AuthenticationService {
     };
 
     return this.handleAuthResponse(
-      this.httpClient.post<RegisterResponse>(this.endpoints.auth.v1.authentication, payload, {
+      this.http.post<RegisterResponse>(this.endpoints.auth.v1.authentication, payload, {
         headers: {
           'Accept-Language': this.languageService.convertLocaleToAcceptLanguage(),
         },
@@ -68,7 +68,7 @@ export class AuthenticationService {
     };
 
     return this.handleAuthResponse(
-      this.httpClient.post<LoginResponse>(this.endpoints.auth.v1.login, payload),
+      this.http.post<LoginResponse>(this.endpoints.auth.v1.login, payload),
     ).pipe(map((data) => data.user));
   }
 
@@ -76,7 +76,7 @@ export class AuthenticationService {
     const refreshToken = this.storageService?.getItem(REFRESH_TOKEN_KEY);
 
     return this.handleAuthResponse(
-      this.httpClient.post<RefreshTokenResponse>(this.endpoints.auth.v1.refreshToken, {
+      this.http.post<RefreshTokenResponse>(this.endpoints.auth.v1.refreshToken, {
         refreshToken,
       }),
     );

@@ -13,10 +13,10 @@ import type { LastUpdatedPokemonIdsResponse } from '~features/pokemon/types/last
 })
 export class PokemonService {
   private readonly endpoints = getEndpoints();
-  private readonly httpClient = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   getPokemon(pokemonIdOrName: string | number): Observable<Pokemon> {
-    return this.httpClient.get<Pokemon>(this.endpoints.pokemon.v1.pokemon(pokemonIdOrName), {
+    return this.http.get<Pokemon>(this.endpoints.pokemon.v1.pokemon(pokemonIdOrName), {
       params: new HttpParams().set('limit', '1'),
       context: new HttpContext().set(CACHING_ENABLED, true),
     });
@@ -38,13 +38,11 @@ export class PokemonService {
   }
 
   getLastUpdatedPokemonIds(): Observable<string[]> {
-    return this.httpClient
-      .get<LastUpdatedPokemonIdsResponse>(this.endpoints.pokemon.v1.lastUpdated)
-      .pipe(
-        map((response: LastUpdatedPokemonIdsResponse) => {
-          const { data } = response;
-          return data.pokemonIds;
-        }),
-      );
+    return this.http.get<LastUpdatedPokemonIdsResponse>(this.endpoints.pokemon.v1.lastUpdated).pipe(
+      map((response: LastUpdatedPokemonIdsResponse) => {
+        const { data } = response;
+        return data.pokemonIds;
+      }),
+    );
   }
 }
